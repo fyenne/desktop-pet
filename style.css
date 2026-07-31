@@ -1,0 +1,291 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent !important;
+  user-select: none;
+  cursor: default;
+}
+
+.pet-container {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  top: 25px;
+  left: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  transition: transform 0.1s ease;
+}
+
+.pet-container:active {
+  cursor: grabbing;
+}
+
+.cursor-companion {
+  position: absolute;
+  font-size: 24px;
+  pointer-events: none; /* Absolutely click-through, doesn't interfere */
+  z-index: 99999;
+  user-select: none;
+  transform: translate(12px, 12px); /* Offsets it right next to your cursor */
+  display: block;
+}
+
+.pet-face {
+  width: 75px;
+  height: 75px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  transform: translate(15px, -10px); /* Offset X right by 6px, and Y up by 15px onto the neck */
+  transform-origin: bottom left; /* Anchor pivot point at bottom left (neck area) */
+  transition: transform 0.1s ease-in-out;
+  z-index: 2;
+}
+
+/* Whipped state: Rotate head 45 degrees around its anchor */
+.pet-face.whipped {
+  transform: translate(15px, -10px) rotate(45deg) !important;
+}
+
+/* Speech Bubble Design (No Animations, Flat Left-to-Right) */
+.speech-bubble {
+  position: absolute;
+  bottom: 125px; /* Float nicely above the pet's head */
+  background: white;
+  color: #111;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  white-space: nowrap;
+  display: none; /* Hidden by default with no transition animations */
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* Speech bubble bottom pointer triangle */
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0;
+  border-style: solid;
+  border-color: white transparent;
+  display: block;
+  width: 0;
+}
+
+/* Show state (Instantly pops visible) */
+.speech-bubble.show {
+  display: block;
+}
+
+/* Un-flip the text box when the parent is mirrored so text remains left-to-right */
+.pet-container.flipped-direction .speech-bubble.show {
+  display: block;
+  transform: scaleX(-1);
+}
+
+/* Whip Design & Animation */
+.whip {
+  position: absolute;
+  width: 60px;
+  height: 30px;
+  border: 4px solid #734a12; /* Leather brown color */
+  border-radius: 50% 50% 0 0;
+  border-bottom: none;
+  border-right: none;
+  top: -10px;
+  left: 10px;
+  opacity: 0;
+  transform-origin: bottom left;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.whip.cracking {
+  animation: waveWhip 0.5s ease-out forwards;
+}
+
+@keyframes waveWhip {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-80deg);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.2) rotate(45deg);
+  }
+  50% {
+    transform: scale(1.0) rotate(-20deg);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1.1) rotate(10deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5) rotate(0deg);
+  }
+}
+
+.pet-body {
+  width: 65px;
+  height: 45px;
+  background: #ffde59;
+  border-radius: 25px 25px 12px 12px;
+  margin-top: -12px;
+  position: relative;
+  z-index: 1;
+}
+
+.leg {
+  position: absolute;
+  width: 10px;
+  height: 16px;
+  background: #e5b800;
+  border-radius: 5px;
+  bottom: -10px;
+}
+
+.leg-front-left { right: 10px; }
+.leg-front-right { right: 22px; }
+.leg-back-left { left: 10px; }
+.leg-back-right { left: 22px; }
+
+.tail {
+  position: absolute;
+  left: -8px;
+  top: 12px;
+  width: 14px;
+  height: 14px;
+  background: #ffde59;
+  border-radius: 50%;
+  transform-origin: right center;
+}
+
+/* Animations for different states */
+.pet-container.walking .leg-front-left,
+.pet-container.walking .leg-back-right {
+  animation: legWalk 0.5s infinite alternate;
+}
+.pet-container.walking .leg-front-right,
+.pet-container.walking .leg-back-left {
+  animation: legWalk 0.5s infinite alternate-reverse;
+}
+
+.pet-container.running .leg-front-left,
+.pet-container.running .leg-back-right {
+  animation: legWalk 0.25s infinite alternate;
+}
+.pet-container.running .leg-front-right,
+.pet-container.running .leg-back-left {
+  animation: legWalk 0.25s infinite alternate-reverse;
+}
+
+.pet-container.running .tail {
+  animation: tailWag 0.15s infinite alternate;
+}
+
+.pet-container.sleeping {
+  opacity: 0.7;
+  transform: translateY(10px) rotate(15deg);
+}
+
+@keyframes legWalk {
+  0% { transform: rotate(-25deg); }
+  100% { transform: rotate(25deg); }
+}
+
+@keyframes tailWag {
+  0% { transform: rotate(-20deg); }
+  100% { transform: rotate(20deg); }
+}
+
+/* Custom Body Styles */
+
+/* Corgi */
+.pet-body.body-style-corgi {
+  width: 80px;
+  height: 40px;
+  background: #d07421;
+  border-radius: 20px 20px 15px 15px;
+  background-image: linear-gradient(to top, #fff9e6 40%, #d07421 40%);
+}
+.pet-body.body-style-corgi .leg {
+  width: 12px;
+  height: 10px;
+  background: #f7e6c4;
+  bottom: -6px;
+}
+.pet-body.body-style-corgi .tail {
+  left: -6px;
+  top: 10px;
+  width: 12px;
+  height: 12px;
+  background: #fff9e6;
+}
+
+/* Greyhound */
+.pet-body.body-style-greyhound {
+  width: 55px;
+  height: 50px;
+  background: #2b2b2b;
+  border-radius: 20px 25px 8px 15px;
+  background-image: radial-gradient(circle at 80% 40%, #9e5b1f 30%, transparent 31%);
+  margin-top: -15px;
+}
+.pet-body.body-style-greyhound .leg {
+  width: 7px;
+  height: 25px;
+  background: #9e5b1f;
+  bottom: -18px;
+}
+.pet-body.body-style-greyhound .tail {
+  left: -10px;
+  top: 15px;
+  width: 4px;
+  height: 20px;
+  background: #2b2b2b;
+  border-radius: 2px;
+  transform-origin: top right;
+}
+
+/* Dalmatian */
+.pet-body.body-style-dalmatian {
+  width: 70px;
+  height: 46px;
+  background: #ffffff;
+  border-radius: 22px 22px 12px 12px;
+  background-image: 
+    radial-gradient(circle at 20% 30%, #111 6px, transparent 7px),
+    radial-gradient(circle at 60% 70%, #111 5px, transparent 6px),
+    radial-gradient(circle at 80% 25%, #111 4px, transparent 5px),
+    radial-gradient(circle at 45% 40%, #111 5px, transparent 6px);
+}
+.pet-body.body-style-dalmatian .leg {
+  width: 10px;
+  height: 18px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  bottom: -12px;
+  background-image: radial-gradient(circle at center bottom, #111 40%, transparent 41%);
+}
+.pet-body.body-style-dalmatian .tail {
+  left: -10px;
+  top: 10px;
+  width: 6px;
+  height: 18px;
+  background: #ffffff;
+  background-image: radial-gradient(circle at center bottom, #111 50%, transparent 51%);
+}

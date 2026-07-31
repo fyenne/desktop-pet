@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Local configuration files
+config.json
+temp-config.json
+*.patch
+
+# OS generated files
+.DS_Store
+Thumbs.db
